@@ -1,0 +1,80 @@
+{
+  "train": {
+    "corales": 229,
+    "esperados": 229,
+    "len_min": 100,
+    "len_max": 516,
+    "desplazamiento": 8,
+    "ventanas": 5681,
+    "valor_min_por_voz": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "valor_max_por_voz": [
+      81,
+      74,
+      69,
+      66
+    ],
+    "fraccion_silencio_por_voz": [
+      0.0013,
+      0.0017,
+      0.0021,
+      0.0022
+    ]
+  },
+  "valid": {
+    "corales": 76,
+    "esperados": 76,
+    "len_min": 128,
+    "len_max": 576,
+    "desplazamiento": 16,
+    "ventanas": 982,
+    "valor_min_por_voz": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "valor_max_por_voz": [
+      81,
+      74,
+      69,
+      63
+    ],
+    "fraccion_silencio_por_voz": [
+      0.0076,
+      0.0078,
+      0.0085,
+      0.008
+    ]
+  },
+  "test": {
+    "corales": 77,
+    "esperados": 77,
+    "len_min": 128,
+    "len_max": 640,
+    "desplazamiento": 16,
+    "ventanas": 1011,
+    "valor_min_por_voz": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "valor_max_por_voz": [
+      81,
+      74,
+      69,
+      64
+    ],
+    "fraccion_silencio_por_voz": [
+      0.0036,
+      0.004,
+      0.0038,
+      0.0036
+    ]
+  }
+}
