@@ -1,0 +1,17 @@
+.env
+*.pem
+*.key
+aws_credentials*
+.venv/
+__pycache__/
+data/raw/
+data/*.tgz
+data/*.npz
+mlruns/
+mlartifacts/
+mlflow.db
+*.pt
+*.pth
+*.ckpt
+.ipynb_checkpoints/
+hola.txt

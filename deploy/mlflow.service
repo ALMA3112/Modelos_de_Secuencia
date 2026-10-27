@@ -1,0 +1,12 @@
+[Unit]
+Description=MLflow Tracking Server
+After=network.target
+
+[Service]
+User=ubuntu
+ExecStart=/home/ubuntu/Modelos_de_Secuencia/scripts/start_mlflow.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
