@@ -1,0 +1,17 @@
+{
+  "name": "E3",
+  "run_id": "b9bcb751824d4c68bd1fadf0d369803f",
+  "experiment": "nlp-bach-alma",
+  "arch": "gru_attn",
+  "hidden": 128,
+  "lr": 0.001,
+  "batch": 64,
+  "best_epoch": 16,
+  "epochs_run": 20,
+  "val_loss": 0.662582078922062,
+  "val_note_acc": 0.8073128818737271,
+  "val_step_acc": 0.6234088594704684,
+  "n_params": 364800,
+  "train_time_s": 414.9,
+  "device": "cpu"
+}

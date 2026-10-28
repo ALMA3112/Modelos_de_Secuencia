@@ -1,0 +1,16 @@
+{
+  "arch": "gru_attn",
+  "hidden": 128,
+  "emb": 16,
+  "layers": 1,
+  "lr": 0.001,
+  "batch": 64,
+  "max_epochs": 20,
+  "patience": 4,
+  "seed": 42,
+  "cell": "gru",
+  "attention": true,
+  "vocab": 128,
+  "n_voices": 4,
+  "n_trainable_params": 364800
+}

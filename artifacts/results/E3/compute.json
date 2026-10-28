@@ -1,0 +1,9 @@
+{
+  "device": "cpu",
+  "platform": "Linux-7.0.0-1014-aws-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "cpu_count": 2,
+  "torch": "2.14.1+cpu",
+  "python": "3.12.3",
+  "mlflow": "3.17.2"
+}

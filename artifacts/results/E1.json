@@ -1,0 +1,17 @@
+{
+  "name": "E1",
+  "run_id": "f3259cc3d6c040ba827c33b267a02d15",
+  "experiment": "nlp-bach-alma",
+  "arch": "lstm",
+  "hidden": 128,
+  "lr": 0.001,
+  "batch": 64,
+  "best_epoch": 20,
+  "epochs_run": 20,
+  "val_loss": 0.7483174358997229,
+  "val_note_acc": 0.7900967413441955,
+  "val_step_acc": 0.6001145621181263,
+  "n_params": 266752,
+  "train_time_s": 102.3,
+  "device": "cpu"
+}
