@@ -1,0 +1,9 @@
+{
+  "selected": "E4",
+  "run_id": "07b72a7f0ee54e3795bbec621f6c4d47",
+  "epoch": 11,
+  "val_loss": 0.6275328113687986,
+  "test_loss": 0.6544565866774079,
+  "test_note_acc": 0.8102590257171117,
+  "test_step_acc": 0.6193743818001978
+}
