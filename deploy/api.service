@@ -1,0 +1,16 @@
+[Unit]
+Description=API Bach (FastAPI)
+After=network.target mlflow.service
+Requires=mlflow.service
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Modelos_de_Secuencia
+Environment=MLFLOW_TRACKING_URI=http://127.0.0.1:5000
+ExecStartPre=/bin/sleep 8
+ExecStart=/home/ubuntu/Modelos_de_Secuencia/.venv/bin/uvicorn api.main:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
