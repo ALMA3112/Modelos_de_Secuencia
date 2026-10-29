@@ -12,8 +12,7 @@ Laboratorio de Procesamiento de Lenguaje Natural, 2026 S02. Universidad Sergio A
 | Modelo registrado | `bach-chorales-alma`, versión 1, alias `champion`, run de origen E4 (`07b72a7f0ee54e3795bbec621f6c4d47`) |
 | MLflow y API | URL vigente el día de la sustentación (ver nota) |
 
-> **Nota sobre las URL.** MLflow (puerto 5000) y la API (puerto 8000) corren en una EC2 de AWS Academy Learner Lab sin Elastic IP. La IP pública cambia cada vez que se reinicia el lab. La URL vigente se entrega al docente el día de la sustentación; en la instancia se obtiene con `./scripts/get_urls.sh`.
-> **Acceso del docente:** COMPLETAR (IP del docente añadida al security group, o proyección de pantalla acordada con él).
+
 
 ## 1. Entorno
 
