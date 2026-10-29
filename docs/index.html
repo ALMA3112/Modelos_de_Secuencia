@@ -1,25 +1,152 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Continuaciones de corales de Bach</title>
-<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/audio.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reproductor MIDI: corales de Bach</title>
 <style>
-body{font-family:sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem}
-midi-player{display:block;margin-bottom:.5rem}
-</style></head><body>
-<h1>Continuaciones de corales de Bach</h1>
-<p>Modelo E4 (GRU, lr 2e-3), T=1.0, semilla 123, 120 bpm. Primeros 4 s: contexto real (32 pasos). Siguientes 4 s: continuación generada (32 pasos).</p>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#faf8f4;--fg:#1d1b18;--mut:#6b655c;--card:#fff;--bd:#ddd6c8;--ctx:#00000012;--acc:#2f5d8a;
+--v0:#c0392b;--v1:#d68910;--v2:#1e8449;--v3:#2e86c1}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17161a;--fg:#ece8df;--mut:#a39d91;--card:#201f24;--bd:#3a3840;--ctx:#ffffff12;--acc:#7fb2e5;
+--v0:#ff7b6b;--v1:#f5b041;--v2:#58d68d;--v3:#5dade2}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+main{max-width:920px;margin:0 auto;padding:1.5rem 1rem 3rem}
+h1{font-size:1.5rem;margin:.2rem 0}
+p.s{color:var(--mut);margin:.3rem 0 1rem}
+#drop{border:2px dashed var(--bd);border-radius:12px;padding:1.5rem;text-align:center;background:var(--card);cursor:pointer}
+#drop.on{border-color:var(--acc)}
+button{font:inherit;background:var(--acc);color:var(--bg);border:0;border-radius:8px;padding:.45rem 1rem;cursor:pointer}
+button.o{background:transparent;color:var(--fg);border:1px solid var(--bd)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-top:1rem}
+.card h2{font-size:1.05rem;margin:0 0 .6rem}
+.row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.6rem}
+.cw{overflow-x:auto}
+canvas{width:100%;min-width:560px;height:230px;display:block;border-radius:8px}
+.leg{font-size:.85rem;color:var(--mut)}
+.leg i{display:inline-block;width:.7rem;height:.7rem;border-radius:2px;margin:0 .25rem 0 .7rem;vertical-align:middle}
+</style></head><body><main>
+<h1>Reproductor de continuaciones de Bach</h1>
+<p class="s">Modelo E4 (GRU, lr 2e-3), T=1.0, semilla 123, 120 bpm. Primeros 4 s: contexto real (32 pasos). Siguientes 4 s: continuación generada (32 pasos). Pulsa Reproducir.</p>
+<div id="drop" tabindex="0">Opcional: soltar otros archivos .mid aquí o hacer clic
+<input id="f" type="file" accept=".mid,.midi" multiple hidden></div>
+<div id="out"></div>
+<div class="card"><h2>Mapa de atención de E3</h2><img src="attention_E3.png" alt="Mapa de atención de E3" style="max-width:100%" onerror="this.parentNode.style.display='none'"></div>
+</main>
+<script>
+const COLORS=['--v0','--v1','--v2','--v3'];
+let actx=null,current=null;
 
-<h2>Coral 1 (chorale_229)</h2>
-<midi-player src="midi/coral1_chorale_229.mid" sound-font visualizer="#v1"></midi-player>
-<midi-visualizer id="v1" type="piano-roll"></midi-visualizer>
-<p><a href="midi/coral1_chorale_229.mid">Descargar .mid</a></p>
+function parseMidi(buf){
+  const d=new DataView(buf);let p=0;
+  const str=n=>{let s='';for(let i=0;i<n;i++)s+=String.fromCharCode(d.getUint8(p++));return s};
+  const vl=()=>{let v=0,b;do{b=d.getUint8(p++);v=(v<<7)|(b&127)}while(b&128);return v};
+  if(str(4)!=='MThd')throw new Error('No es un archivo MIDI');
+  p+=4;p+=2;const nt=d.getUint16(p);p+=2;const div=d.getUint16(p);p+=2;
+  const tempos=[],tracks=[];
+  for(let t=0;t<nt;t++){
+    if(str(4)!=='MTrk')throw new Error('Pista inválida');
+    const len=d.getUint32(p);p+=4;const end=p+len;
+    let tick=0,run=0;const notes=[],open={};
+    while(p<end){
+      tick+=vl();
+      let st=d.getUint8(p);
+      if(st<128){st=run}else{p++;if(st<0xF0)run=st}
+      if(st===0xFF){
+        const type=d.getUint8(p++);const l=vl();
+        if(type===0x51)tempos.push([tick,(d.getUint8(p)<<16)|(d.getUint8(p+1)<<8)|d.getUint8(p+2)]);
+        p+=l;
+      }else if(st===0xF0||st===0xF7){p+=vl()}
+      else{
+        const k=st&0xF0,a=d.getUint8(p++),b=(k===0xC0||k===0xD0)?0:d.getUint8(p++);
+        if(k===0x90&&b>0){open[a]=tick}
+        else if(k===0x80||(k===0x90&&b===0)){if(open[a]!==undefined){notes.push({s:open[a],e:tick,p:a});delete open[a]}}
+      }
+    }
+    p=end;tracks.push(notes);
+  }
+  tempos.sort((x,y)=>x[0]-y[0]);
+  if(!tempos.length||tempos[0][0]>0)tempos.unshift([0,500000]);
+  const sec=tk=>{let s=0;for(let i=0;i<tempos.length;i++){
+    const a=tempos[i][0],b=i+1<tempos.length?tempos[i+1][0]:Infinity;
+    if(tk<=a)break;s+=(Math.min(tk,b)-a)/div*tempos[i][1]/1e6;if(tk<=b)break}return s};
+  const voices=tracks.filter(n=>n.length).map(n=>n.map(x=>({s:sec(x.s),e:sec(x.e),p:x.p})));
+  const bpm=60e6/tempos[0][1];
+  return{voices,bpm,ctxEnd:32*60/(4*bpm)};
+}
 
-<h2>Coral 2 (chorale_230)</h2>
-<midi-player src="midi/coral2_chorale_230.mid" sound-font visualizer="#v2"></midi-player>
-<midi-visualizer id="v2" type="piano-roll"></midi-visualizer>
-<p><a href="midi/coral2_chorale_230.mid">Descargar .mid</a></p>
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
 
-<h2>Mapa de atención de E3</h2>
-<img src="attention_E3.png" alt="Mapa de atención E3" style="max-width:100%">
-</body></html>
+function draw(c,m,t){
+  const dpr=window.devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;
+  c.width=W*dpr;c.height=H*dpr;const g=c.getContext('2d');g.scale(dpr,dpr);
+  const all=m.voices.flat();const total=Math.max(...all.map(n=>n.e));
+  const lo=Math.min(...all.map(n=>n.p))-1,hi=Math.max(...all.map(n=>n.p))+2;
+  const X=s=>s/total*W,Y=p=>H-(p-lo)/(hi-lo)*H,h=H/(hi-lo);
+  g.fillStyle=css('--ctx');g.fillRect(0,0,X(m.ctxEnd),H);
+  g.fillStyle=css('--mut');g.font='12px system-ui';
+  g.fillText('contexto real',6,14);g.fillText('continuación generada',X(m.ctxEnd)+6,14);
+  g.strokeStyle=css('--mut');g.setLineDash([4,3]);g.beginPath();g.moveTo(X(m.ctxEnd),0);g.lineTo(X(m.ctxEnd),H);g.stroke();g.setLineDash([]);
+  m.voices.forEach((v,i)=>{g.fillStyle=css(COLORS[i%4]);
+    v.forEach(n=>g.fillRect(X(n.s),Y(n.p+1),Math.max(1,X(n.e)-X(n.s)-1),h-1))});
+  if(t!=null){g.strokeStyle=css('--fg');g.lineWidth=2;g.beginPath();g.moveTo(X(t),0);g.lineTo(X(t),H);g.stroke();g.lineWidth=1}
+  return total;
+}
+
+function stop(){if(current){current.nodes.forEach(o=>{try{o.stop()}catch(e){}});cancelAnimationFrame(current.raf);
+  current.btn.textContent='▶ Reproducir';const c=current;current=null;draw(c.canvas,c.m,null)}}
+
+function play(m,canvas,btn){
+  if(current&&current.canvas===canvas){stop();return}
+  stop();
+  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  actx.resume();
+  const t0=actx.currentTime+.1,nodes=[];
+  m.voices.forEach(v=>v.forEach(n=>{
+    const o=actx.createOscillator(),gn=actx.createGain();
+    o.type='triangle';o.frequency.value=440*Math.pow(2,(n.p-69)/12);
+    const a=t0+n.s,b=t0+n.e;
+    gn.gain.setValueAtTime(0,a);gn.gain.linearRampToValueAtTime(.12,a+.01);
+    gn.gain.setValueAtTime(.12,b-.03);gn.gain.linearRampToValueAtTime(0,b);
+    o.connect(gn).connect(actx.destination);o.start(a);o.stop(b+.02);nodes.push(o);
+  }));
+  const total=Math.max(...m.voices.flat().map(n=>n.e));
+  current={canvas,m,btn,nodes,raf:0};btn.textContent='■ Detener';
+  const tick=()=>{const t=actx.currentTime-t0;
+    if(t>=total+.1){stop();return}
+    draw(canvas,m,Math.max(0,t));current.raf=requestAnimationFrame(tick)};
+  tick();
+}
+
+async function load(files){
+  const out=document.getElementById('out');
+  for(const f of files){
+    try{
+      const m=parseMidi(await f.arrayBuffer());
+      const card=document.createElement('div');card.className='card';
+      const total=Math.max(...m.voices.flat().map(n=>n.e)).toFixed(1);
+      card.innerHTML=`<h2></h2><div class="row"><button>▶ Reproducir</button>
+        <span class="leg">${m.voices.length} voces · ${Math.round(m.bpm)} bpm · ${total} s</span></div>
+        <div class="cw"><canvas></canvas></div>
+        <div class="leg">${m.voices.map((_,i)=>`<i style="background:var(${COLORS[i%4]})"></i>voz ${i}`).join('')}</div>`;
+      card.querySelector('h2').textContent=f.name;
+      out.appendChild(card);
+      const cv=card.querySelector('canvas'),btn=card.querySelector('button');
+      draw(cv,m,null);btn.onclick=()=>play(m,cv,btn);
+      addEventListener('resize',()=>{if(!current||current.canvas!==cv)draw(cv,m,null)});
+    }catch(e){
+      const p=document.createElement('p');p.className='s';p.textContent=`No se pudo leer ${f.name}: ${e.message}`;out.appendChild(p);
+    }
+  }
+}
+
+const AUTO=['midi/coral1_chorale_229.mid','midi/coral2_chorale_230.mid'];
+(async()=>{const fs=[];for(const u of AUTO){try{const r=await fetch(u);if(!r.ok)continue;const b=await r.arrayBuffer();
+  fs.push({name:u.split('/').pop(),arrayBuffer:async()=>b})}catch(e){}}
+  if(fs.length)load(fs)})();
+const drop=document.getElementById('drop'),inp=document.getElementById('f');
+drop.onclick=()=>inp.click();
+inp.onchange=()=>load([...inp.files]);
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('on')};
+drop.ondragleave=()=>drop.classList.remove('on');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('on');load([...e.dataTransfer.files])};
+</script></body></html>
