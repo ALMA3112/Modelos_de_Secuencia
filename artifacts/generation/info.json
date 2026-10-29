@@ -1,0 +1,122 @@
+{
+  "modelo": "E4",
+  "run_id": "07b72a7f0ee54e3795bbec621f6c4d47",
+  "epoca_checkpoint": 11,
+  "semilla_generacion": 123,
+  "temperatura": 1.0,
+  "tempo_negras_por_minuto": 120,
+  "segundos_por_paso": 0.125,
+  "pasos_generados": 32,
+  "fragmentos": [
+    {
+      "coral": "chorale_229.csv",
+      "archivo_midi": "coral1_chorale_229.mid",
+      "contexto": {
+        "pasos": 32,
+        "silencios": 0,
+        "notas_distintas_por_voz": [
+          4,
+          3,
+          3,
+          8
+        ],
+        "frac_paso_igual_al_anterior": 0.613,
+        "frac_nota_igual_a_la_anterior": 0.823,
+        "rango_notas": [
+          45,
+          72
+        ],
+        "notas_midi_tras_fusion": 26
+      },
+      "generado": {
+        "pasos": 32,
+        "silencios": 0,
+        "notas_distintas_por_voz": [
+          7,
+          6,
+          4,
+          9
+        ],
+        "frac_paso_igual_al_anterior": 0.452,
+        "frac_nota_igual_a_la_anterior": 0.758,
+        "rango_notas": [
+          45,
+          74
+        ],
+        "notas_midi_tras_fusion": 34
+      },
+      "continuacion_real": {
+        "pasos": 32,
+        "silencios": 0,
+        "notas_distintas_por_voz": [
+          3,
+          3,
+          6,
+          6
+        ],
+        "frac_paso_igual_al_anterior": 0.742,
+        "frac_nota_igual_a_la_anterior": 0.871,
+        "rango_notas": [
+          48,
+          76
+        ],
+        "notas_midi_tras_fusion": 20
+      }
+    },
+    {
+      "coral": "chorale_230.csv",
+      "archivo_midi": "coral2_chorale_230.mid",
+      "contexto": {
+        "pasos": 32,
+        "silencios": 0,
+        "notas_distintas_por_voz": [
+          4,
+          3,
+          3,
+          9
+        ],
+        "frac_paso_igual_al_anterior": 0.677,
+        "frac_nota_igual_a_la_anterior": 0.855,
+        "rango_notas": [
+          43,
+          72
+        ],
+        "notas_midi_tras_fusion": 22
+      },
+      "generado": {
+        "pasos": 32,
+        "silencios": 0,
+        "notas_distintas_por_voz": [
+          5,
+          5,
+          4,
+          8
+        ],
+        "frac_paso_igual_al_anterior": 0.516,
+        "frac_nota_igual_a_la_anterior": 0.774,
+        "rango_notas": [
+          45,
+          69
+        ],
+        "notas_midi_tras_fusion": 32
+      },
+      "continuacion_real": {
+        "pasos": 32,
+        "silencios": 0,
+        "notas_distintas_por_voz": [
+          4,
+          5,
+          7,
+          6
+        ],
+        "frac_paso_igual_al_anterior": 0.516,
+        "frac_nota_igual_a_la_anterior": 0.758,
+        "rango_notas": [
+          43,
+          74
+        ],
+        "notas_midi_tras_fusion": 34
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "coral": "chorale_229.csv",
+  "epoca_checkpoint": 16,
+  "semilla": 123,
+  "temperatura": 1.0,
+  "posicion_maxima_por_paso_generado": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+  ],
+  "peso_medio_ultimos_4_pasos_de_contexto": 0.634,
+  "peso_medio_primeros_16_pasos_de_contexto": 0.318,
+  "cinco_posiciones_con_mas_peso_medio": [
+    32,
+    31,
+    30,
+    12,
+    29
+  ]
+}
