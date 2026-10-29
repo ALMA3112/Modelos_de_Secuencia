@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Continuaciones de corales de Bach</title>
+<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/audio.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+<style>
+body{font-family:sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem}
+midi-player{display:block;margin-bottom:.5rem}
+</style></head><body>
+<h1>Continuaciones de corales de Bach</h1>
+<p>Modelo E4 (GRU, lr 2e-3), T=1.0, semilla 123, 120 bpm. Primeros 4 s: contexto real (32 pasos). Siguientes 4 s: continuación generada (32 pasos).</p>
+
+<h2>Coral 1 (chorale_229)</h2>
+<midi-player src="midi/coral1_chorale_229.mid" sound-font visualizer="#v1"></midi-player>
+<midi-visualizer id="v1" type="piano-roll"></midi-visualizer>
+<p><a href="midi/coral1_chorale_229.mid">Descargar .mid</a></p>
+
+<h2>Coral 2 (chorale_230)</h2>
+<midi-player src="midi/coral2_chorale_230.mid" sound-font visualizer="#v2"></midi-player>
+<midi-visualizer id="v2" type="piano-roll"></midi-visualizer>
+<p><a href="midi/coral2_chorale_230.mid">Descargar .mid</a></p>
+
+<h2>Mapa de atención de E3</h2>
+<img src="attention_E3.png" alt="Mapa de atención E3" style="max-width:100%">
+</body></html>
