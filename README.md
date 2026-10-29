@@ -133,7 +133,7 @@ Estadísticas de la continuación de 32 pasos (`artifacts/generation/info.json`)
 - **Repeticiones.** En el coral 229 la continuación generada repite menos que la real (0,452 frente a 0,742 de pasos iguales al anterior); en el 230 coincide con la real (0,516).
 - **Variedad.** En el coral 229 usa más notas distintas por voz que el original (hasta 9 frente a 6), señal de más movimiento. En el 230 las cifras son parecidas. Con muestreo a T = 1,0 es esperable algo más de variación.
 - **Silencios.** Ninguna continuación contiene silencios, coherente con su rareza en los datos (menos del 1 %). El modelo casi nunca los predice, así que el análisis de silencios es limitado.
-- **Impresión musical.** Al escuchar los dos MIDI, las continuaciones suenan coherentes con el contexto. COMPLETAR (opcional: voces, saltos, estilo percibido).
+- **Impresión musical.** Al escuchar los dos MIDI, las continuaciones suenan coherentes con el contexto.
 - **Desempeño predictivo frente a calidad musical.** La exactitud mide cuánto coincide la predicción con una continuación concreta y con teacher forcing. En generación libre los errores se acumulan y se muestrea, por lo que la continuación no tiene por qué coincidir con la real y aun así sonar bien. A la inversa, una exactitud alta no garantiza fraseo o armonía agradables. La métrica no captura la calidad percibida.
 
 ## 8. Mapa de atención de E3
